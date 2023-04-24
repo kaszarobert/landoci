@@ -6,7 +6,7 @@ on:
 
 env:
     CODE_COVERAGE_MINIMUM: 45 # 65 should be min.
-    LANDO_VERSION: v3.6.5
+    LANDO_VERSION: v3.11.0
     APP_ENV: testing
     APP_DEBUG: true
     DB_CONNECTION: mysql
