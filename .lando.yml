@@ -1,0 +1,36 @@
+name: myproject
+recipe: laravel
+config:
+  php: '8.1'
+  via: nginx
+  database: mysql:5.7
+  webroot: public
+  xdebug: true
+services:
+  appserver:
+    overrides:
+      environment:
+        # Support debugging CLI with XDEBUG.
+        PHP_IDE_CONFIG: "serverName=appserver"
+        XDEBUG_TRIGGER: lando
+    xdebug: "debug,develop"
+    config:
+        php: php.ini
+    build_as_root:
+      # Disable XDebug by default
+      - rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm
+      # Install additional necessary packages.
+      - pecl install pcov
+
+tooling:
+  xdebug-on:
+    service: appserver
+    description: Enable xdebug for nginx.
+    cmd: rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && docker-php-ext-enable xdebug && pkill -o -USR2 php-fpm && echo "Xdebug enabled"
+    user: root
+
+  xdebug-off:
+    service: appserver
+    description: Disable xdebug for nginx.
+    cmd: rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm && echo "Xdebug disabled"
+    user: root
